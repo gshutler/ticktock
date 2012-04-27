@@ -3,15 +3,14 @@
   <head>
     <title>TickTock</title>
     <style type="text/css">
-    #bar { background-color: #0F0; }
-    #progress { background-color: #f00; height: 20px; width: 0%; }
+    body { margin: 0; padding: 0; }
+    #bar { background-color: #0F0; position: absolute; z-index: -1; top: 0; bottom: 0; width: 100%; }
+    #progress { background-color: #f00; height: 100%; width: 0%; }
+    #time { position: absolute; bottom: 5%; right: 5%; font-size: 8em; color: #fff; font-family: Monaco, Consolas, Courier, monospace; text-shadow: 3px 3px 5px rgba(0,0,0,0.4); }
     </style>
   </head>
   <body>
     <div id="time">00:00</div>
-    <div id="bar">
-      <div id="progress"></div>
-    </div>
     <div>
       <select name="minutes" id="setMinutes">
         <option value="0">00</option>
@@ -43,6 +42,9 @@
       <button id="start">Start</button>
       <button id="stop">Stop</button>
       <button id="reset">Reset</button>
+    </div>
+    <div id="bar">
+      <div id="progress"></div>
     </div>
     <script type="text/javascript" src="/script.js"></script>
   </body>
