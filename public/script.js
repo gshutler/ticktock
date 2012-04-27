@@ -76,6 +76,8 @@
 
         API.setDuration = function(minutes, seconds) {
             var safeElapsed = elapsed;
+            minutes = parseInt(minutes);
+            seconds = parseInt(seconds);
 
             seconds = (minutes * 60) + seconds;
             length = seconds * 1000;
