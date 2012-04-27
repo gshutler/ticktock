@@ -91,9 +91,12 @@ var TickTock = TickTock || {};
 
         return API;
     })();
+})();
 
+$(function() {
+    var progress = $('#progress');
     TickTock.PubSub.subscribe('timeChanged', function(args) {
-        document.getElementById('progress').style.width = ((args.elapsed / args.length) * 100) + '%';
+        progress.css('width', ((args.elapsed / args.length) * 100) + '%');
     });
 
     var padNumber = function(number) {
@@ -106,40 +109,42 @@ var TickTock = TickTock || {};
         return numberDisplay;
     };
 
+    var timeText = $('#time');
+
     TickTock.PubSub.subscribe('timeChanged', function(args) {
         var seconds = args.elapsed / 1000;
         var minutes = Math.floor(seconds / 60);
 
         seconds = seconds - (minutes * 60);
 
-        document.getElementById('time').innerHTML = padNumber(minutes) + ':' + padNumber(seconds);
+        timeText.text(padNumber(minutes) + ':' + padNumber(seconds));
     });
 
-    var startButton = document.getElementById('start');
-    startButton.onclick = function() {
+    var startButton = $('#start');
+    startButton.click(function() {
         TickTock.Timer.start();
-    };
+    });
 
-    var stopButton = document.getElementById('stop');
-    stopButton.onclick = function() {
+    var stopButton = $('#stop');
+    stopButton.click(function() {
         TickTock.Timer.stop();
-    };
+    });
 
-    var resetButton = document.getElementById('reset');
-    resetButton.onclick = function() {
+    var resetButton = $('#reset');
+    resetButton.click(function() {
         TickTock.Timer.reset();
-    };
+    });
 
-    var setMinutes = document.getElementById('setMinutes');
-    var setSeconds = document.getElementById('setSeconds');
-    var setTimeButton = document.getElementById('setTime');
+    var setMinutes = $('#setMinutes');
+    var setSeconds = $('#setSeconds');
+    var setTimeButton = $('#setTime');
 
     var setTime = function() {
-        TickTock.Timer.setDuration(setMinutes.value, setSeconds.value);
+        TickTock.Timer.setDuration(setMinutes.val(), setSeconds.val());
     };
 
-    setMinutes.onchange = setTime;
-    setSeconds.onchange = setTime;
+    setMinutes.change(setTime);
+    setSeconds.change(setTime);
 
     setTime();
-})();
+});
