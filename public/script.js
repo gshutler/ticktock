@@ -1,6 +1,6 @@
-(function() {
-    var TickTock = {};
+var TickTock = TickTock || {};
 
+(function() {
     TickTock.PubSub = (function() {
         var API = {};
         var subscribers = {};
