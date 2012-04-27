@@ -1,4 +1,4 @@
-(function() { 
+(function() {
     var TickTock = {};
 
     TickTock.PubSub = (function() {
@@ -82,7 +82,6 @@
             seconds = (minutes * 60) + seconds;
             length = seconds * 1000;
 
-            /* Probably want to work out a cleaner way of managing this between here and update time */
             if (safeElapsed > length) {
                 safeElapsed = length;
             }
@@ -139,9 +138,8 @@
         TickTock.Timer.setDuration(setMinutes.value, setSeconds.value);
     };
 
-    setTimeButton.onclick = function() {
-        setTime();
-    };
+    setMinutes.onchange = setTime;
+    setSeconds.onchange = setTime;
 
     setTime();
 })();
