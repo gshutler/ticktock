@@ -95,10 +95,6 @@
         document.getElementById('progress').style.width = ((args.elapsed / args.length) * 100) + '%';
     });
 
-    TickTock.PubSub.subscribe('timeChanged', function(args) {
-        document.getElementById('elapsed').innerHTML = args.elapsed + '/' + args.length;
-    });
-
     var padNumber = function(number) {
         var numberDisplay = number.toFixed(0);
 
@@ -132,4 +128,18 @@
     resetButton.onclick = function() {
         TickTock.Timer.reset();
     };
+
+    var setMinutes = document.getElementById('setMinutes');
+    var setSeconds = document.getElementById('setSeconds');
+    var setTimeButton = document.getElementById('setTime');
+
+    var setTime = function() {
+        TickTock.Timer.setDuration(setMinutes.value, setSeconds.value);
+    };
+
+    setTimeButton.onclick = function() {
+        setTime();
+    };
+
+    setTime();
 })();

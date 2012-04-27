@@ -8,11 +8,28 @@
     </style>
   </head>
   <body>
-    <div id="elapsed">0/0</div>
     <div id="time">00:00</div>
     <div id="bar">
       <div id="progress"></div>
     </div>
+    <div>
+      <select name="minutes" id="setMinutes">
+        <option value="0">00</option>
+        <option value="1">01</option>
+        <option value="2">02</option>
+        <option value="3">03</option>
+        <option value="4">04</option>
+        <option value="5">05</option>
+      </select>
+      <select name="seconds" id="setSeconds">
+        <option value="0">00</option>
+        <option value="15" selected="true">15</option>
+        <option value="30">30</option>
+        <option value="45">45</option>
+      </select>
+      <button id="setTime">Set</button>
+    </div>
+    <br />
     <div>
       <button id="start">Start</button>
       <button id="stop">Stop</button>
