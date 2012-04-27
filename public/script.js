@@ -2,29 +2,29 @@
     var TickTock = {};
 
     TickTock.PubSub = (function() {
-		var API = {};
-		var subscribers = {};
-		
-		var ensureSubscriptionCollection = function(message) {
-			subscribers[message] = subscribers[message] || [];
-		};
+        var API = {};
+        var subscribers = {};
 
-		API.publish = function(message, args) {
-			var i;
-			ensureSubscriptionCollection(message);
-						
-			for (i = 0; i < subscribers[message].length; i++) {
-				subscribers[message][i](args);
-			}
-		};
-		
-		API.subscribe = function(message, fn) {
-			ensureSubscriptionCollection(message);
-			subscribers[message].push(fn);
-		};
+        var ensureSubscriptionCollection = function(message) {
+            subscribers[message] = subscribers[message] || [];
+        };
 
-		return API;
-	})();
+        API.publish = function(message, args) {
+            var i;
+            ensureSubscriptionCollection(message);
+
+            for (i = 0; i < subscribers[message].length; i++) {
+                subscribers[message][i](args);
+            }
+        };
+
+        API.subscribe = function(message, fn) {
+            ensureSubscriptionCollection(message);
+            subscribers[message].push(fn);
+        };
+
+        return API;
+    })();
 
     TickTock.Timer = (function() {
         var API = {};
@@ -33,7 +33,7 @@
         var length = 10 * 1000;
         var cycleTime = 20;
         var updateTime = null;
-		var started = null;
+        var started = null;
 
         updateTime = function() {
             if (running === false) {
@@ -46,76 +46,90 @@
             if (elapsed >= length) {
                 elapsed = length;
                 running = false;
-				TickTock.PubSub.publish('timeChanged', { 'elapsed': elapsed, 'length': length });
-				TickTock.PubSub.publish('timerComplete', { 'elapsed': elapsed, 'length': length });
-				return;
+                TickTock.PubSub.publish('timeChanged', { 'elapsed': elapsed, 'length': length });
+                TickTock.PubSub.publish('timerComplete', { 'elapsed': elapsed, 'length': length });
+                return;
             }
-            
-			TickTock.PubSub.publish('timeChanged', { 'elapsed': elapsed, 'length': length });
+
+            TickTock.PubSub.publish('timeChanged', { 'elapsed': elapsed, 'length': length });
             setTimeout(updateTime, cycleTime);
         };
 
         API.start = function() {
             running = true;
-            started = new Date();
+            started = new Date() - elapsed;
             updateTime();
-			TickTock.PubSub.publish('timerStarted', { 'elapsed': elapsed, 'length': length });
+            TickTock.PubSub.publish('timerStarted', { 'elapsed': elapsed, 'length': length });
         };
 
-		API.stop = function() {
-			running = false;
-			TickTock.PubSub.publish('timerStopped', { 'elapsed': elapsed, 'length': length });
-		};
+        API.stop = function() {
+            running = false;
+            TickTock.PubSub.publish('timerStopped', { 'elapsed': elapsed, 'length': length });
+        };
 
-		API.reset = function() {
-			elapsed = 0;
-			TickTock.PubSub.publish('timeChanged', { 'elapsed': elapsed, 'length': length });
-			TickTock.PubSub.publish('timerReset', { 'elapsed': elapsed, 'length': length });
-		};
+        API.reset = function() {
+            elapsed = 0;
+            started = new Date();
+            TickTock.PubSub.publish('timeChanged', { 'elapsed': elapsed, 'length': length });
+            TickTock.PubSub.publish('timerReset', { 'elapsed': elapsed, 'length': length });
+        };
 
-		API.setDuration = function(minutes, seconds) {
-			var safeElapsed = elapsed;
+        API.setDuration = function(minutes, seconds) {
+            var safeElapsed = elapsed;
 
-			seconds = (minutes * 60) + seconds;
-			length = seconds * 1000;
+            seconds = (minutes * 60) + seconds;
+            length = seconds * 1000;
 
-			/* Probably want to work out a cleaner way of managing this between here and update time */
-			if (safeElapsed > length) {
-				safeElapsed = length;
-			}
+            /* Probably want to work out a cleaner way of managing this between here and update time */
+            if (safeElapsed > length) {
+                safeElapsed = length;
+            }
 
-			TickTock.PubSub.publish('timerDurationSet', { 'elapsed': safeElapsed, 'length': length });
-		};
+            TickTock.PubSub.publish('timerDurationSet', { 'elapsed': safeElapsed, 'length': length });
+        };
 
         return API;
     })();
 
-	TickTock.PubSub.subscribe('timeChanged', function(args) {
+    TickTock.PubSub.subscribe('timeChanged', function(args) {
         document.getElementById('progress').style.width = ((args.elapsed / args.length) * 100) + '%';
-	});
+    });
 
-	TickTock.PubSub.subscribe('timeChanged', function(args) {
-		document.getElementById('elapsed').innerHTML = args.elapsed + '/' + args.length;
-	});
-	
-	var padNumber = function(number) {
-		var numberDisplay = number.toFixed(0);
+    TickTock.PubSub.subscribe('timeChanged', function(args) {
+        document.getElementById('elapsed').innerHTML = args.elapsed + '/' + args.length;
+    });
 
-		if (numberDisplay.length < 2) {
-			numberDisplay = '0' + numberDisplay;
-		}
+    var padNumber = function(number) {
+        var numberDisplay = number.toFixed(0);
 
-		return numberDisplay;
-	};
+        if (numberDisplay.length < 2) {
+            numberDisplay = '0' + numberDisplay;
+        }
 
-	TickTock.PubSub.subscribe('timeChanged', function(args) {
-		var seconds = args.elapsed / 1000;
-		var minutes = Math.floor(seconds / 60);
+        return numberDisplay;
+    };
 
-		seconds = seconds - (minutes * 60);
+    TickTock.PubSub.subscribe('timeChanged', function(args) {
+        var seconds = args.elapsed / 1000;
+        var minutes = Math.floor(seconds / 60);
 
-		document.getElementById('time').innerHTML = padNumber(minutes) + ':' + padNumber(seconds);
-	});
+        seconds = seconds - (minutes * 60);
 
-    TickTock.Timer.start();
+        document.getElementById('time').innerHTML = padNumber(minutes) + ':' + padNumber(seconds);
+    });
+
+    var startButton = document.getElementById('start');
+    startButton.onclick = function() {
+        TickTock.Timer.start();
+    };
+
+    var stopButton = document.getElementById('stop');
+    stopButton.onclick = function() {
+        TickTock.Timer.stop();
+    };
+
+    var resetButton = document.getElementById('reset');
+    resetButton.onclick = function() {
+        TickTock.Timer.reset();
+    };
 })();
