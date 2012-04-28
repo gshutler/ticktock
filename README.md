@@ -1,9 +1,7 @@
 # Tick Tock
 
 Tick Tock is a tool for helping a speaker know how much time they have left for
-their talk.
-
-Tick Tock can be used on a PC, smart phone or tablet.
+their talk. Tick Tock can be used on a PC, smartphone or tablet.
 
 ## Branding
 
