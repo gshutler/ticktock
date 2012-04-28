@@ -103,12 +103,12 @@ $(function() {
         progress.css('width', ((args.elapsed / args.length) * 100) + '%');
     });
 
+    var body = $('body');
     TickTock.PubSub.subscribe('timerStarted', function() {
-        $('body').addClass('playing');
+        body.addClass('playing');
     });
-
     TickTock.PubSub.subscribe('timerStopped', function() {
-        $('body').removeClass('playing');
+        body.removeClass('playing');
     });
 
     var padNumber = function(number) {
