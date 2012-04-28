@@ -1,26 +1,49 @@
 var TickTock = TickTock || {};
 
 (function() {
+    /**
+     * Object providing simple publish-subscribe functionality for the
+     * TickTock model.
+     */
     TickTock.PubSub = (function() {
         var API = {};
-        var subscribers = {};
+        var channels = {};
 
-        var ensureSubscriptionCollection = function(message) {
-            subscribers[message] = subscribers[message] || [];
+        /**
+         * Ensures the named channel has a collection of subscribers.
+         *
+         * channel - The name of the channel that must have a collection of
+         * subscribers.
+         */
+        var ensureChannel = function(channel) {
+            channels[channel] = channels[channel] || [];
         };
 
-        API.publish = function(message, args) {
+        /**
+         * Publishes the given message across the named channel.
+         *
+         * channel - The name of the channel to publish the message along.
+         * message - The message to pass to subscribing functions.
+         */
+        API.publish = function(channel, message) {
             var i;
-            ensureSubscriptionCollection(message);
+            ensureChannel(channel);
 
-            for (i = 0; i < subscribers[message].length; i++) {
-                subscribers[message][i](args);
+            for (i = 0; i < channels[channel].length; i++) {
+                channels[channel][i](message);
             }
         };
 
-        API.subscribe = function(message, fn) {
-            ensureSubscriptionCollection(message);
-            subscribers[message].push(fn);
+        /**
+         * Adds a subscriber for the named channel.
+         *
+         * channel - The name of the channel to subscribe to.
+         * subscriber - The function subscribing to messages on the named
+         * channel.
+         */
+        API.subscribe = function(channel, subscriber) {
+            ensureChannel(channel);
+            channels[channel].push(subscriber);
         };
 
         return API;
