@@ -48,6 +48,7 @@ var TickTock = TickTock || {};
                 running = false;
                 TickTock.PubSub.publish('timeChanged', { 'elapsed': elapsed, 'length': length });
                 TickTock.PubSub.publish('timerComplete', { 'elapsed': elapsed, 'length': length });
+                TickTock.PubSub.publish('timerStopped', { 'elapsed': elapsed, 'length': length });
                 return;
             }
 
@@ -57,6 +58,9 @@ var TickTock = TickTock || {};
 
         API.start = function() {
             running = true;
+            if (elapsed >= length) {
+                elapsed = 0;
+            }
             started = new Date() - elapsed;
             updateTime();
             TickTock.PubSub.publish('timerStarted', { 'elapsed': elapsed, 'length': length });
@@ -97,6 +101,14 @@ $(function() {
     var progress = $('#progress');
     TickTock.PubSub.subscribe('timeChanged', function(args) {
         progress.css('width', ((args.elapsed / args.length) * 100) + '%');
+    });
+
+    TickTock.PubSub.subscribe('timerStarted', function() {
+        $('body').addClass('playing');
+    });
+
+    TickTock.PubSub.subscribe('timerStopped', function() {
+        $('body').removeClass('playing');
     });
 
     var padNumber = function(number) {

@@ -5,44 +5,56 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <style type="text/css">
     body { margin: 0; padding: 0; }
-    #bar { background-color: #0a0; position: absolute; z-index: -1; top: 0; bottom: 0; width: 100%; }
-    #progress { background-color: #d00; height: 100%; width: 0%; }
-    #time { position: absolute; bottom: 5%; right: 5%; font-size: 8em; color: #fff; font-family: Monaco, Consolas, Courier, monospace; text-shadow: 3px 3px 5px rgba(0,0,0,0.4); }
+    #configuration { margin: 20px; }
+    #duration select { font-size: 5em; }
+    #bar { background-color: #3ea310; position: absolute; z-index: -1; top: 0; bottom: 0; width: 100%; }
+    #progress { background-color: #ef2d00; height: 100%; width: 0%; }
+    #time { position: absolute; bottom: 0; right: 3%; font-size: 8em; color: #fff; font-family: Monaco, Consolas, Courier, monospace; }
+    #controls { position: absolute; bottom: 2%; left: 2%; }
+    .playing #controls { opacity: 0.4; }
+    .playing #configuration { display: none; }
+    #start, #stop, #reset { background: none; border: 0; margin: 0; padding: 20px; }
+    #start div { width: 0; height: 0; border-top: 44px solid transparent; border-left: 66px solid #efc300; border-bottom: 44px solid transparent; }
+    #stop { height: 128px; }
+    #stop div { width: 22px; height: 100%; background-color: #efc300; float: left; }
+    #stop div:nth-child(2) { background: none; }
+    #reset div { width: 0; height: 0; border-top: 44px solid transparent; border-right: 66px solid #efc300; border-bottom: 44px solid transparent; }
     </style>
   </head>
   <body>
     <div id="time">00:00</div>
-    <div>
-      <select name="minutes" id="setMinutes">
-        <option value="0">00</option>
-        <option value="1">01</option>
-        <option value="2">02</option>
-        <option value="3">03</option>
-        <option value="4">04</option>
-        <option value="5">05</option>
-        <option value="6">06</option>
-        <option value="7">07</option>
-        <option value="8">08</option>
-        <option value="9">09</option>
-        <option value="10">10</option>
-        <option value="11">11</option>
-        <option value="12">12</option>
-        <option value="13">13</option>
-        <option value="14">14</option>
-        <option value="15">15</option>
-      </select>
-      <select name="seconds" id="setSeconds">
-        <option value="0">00</option>
-        <option value="15" selected="true">15</option>
-        <option value="30">30</option>
-        <option value="45">45</option>
-      </select>
+    <div id="configuration">
+      <div id="duration">
+        <select name="minutes" id="setMinutes">
+          <option value="0">00</option>
+          <option value="1">01</option>
+          <option value="2">02</option>
+          <option value="3">03</option>
+          <option value="4">04</option>
+          <option value="5">05</option>
+          <option value="6">06</option>
+          <option value="7">07</option>
+          <option value="8">08</option>
+          <option value="9">09</option>
+          <option value="10">10</option>
+          <option value="11">11</option>
+          <option value="12">12</option>
+          <option value="13">13</option>
+          <option value="14">14</option>
+          <option value="15">15</option>
+        </select>
+        <select name="seconds" id="setSeconds">
+          <option value="0">00</option>
+          <option value="15" selected="true">15</option>
+          <option value="30">30</option>
+          <option value="45">45</option>
+        </select>
+      </div>
     </div>
-    <br />
-    <div>
-      <button id="start">Start</button>
-      <button id="stop">Stop</button>
-      <button id="reset">Reset</button>
+    <div id="controls">
+      <button id="start"><div></div></button>
+      <button id="stop"><div></div><div></div><div></div></button>
+      <button id="reset"><div></div></button>
     </div>
     <div id="bar">
       <div id="progress"></div>
