@@ -12,7 +12,7 @@
     #progress { background-color: #ef2d00; height: 100%; width: 0%; }
     #time { position: absolute; bottom: 2%; right: 3%; font-size: 10em; line-height: 1em; color: #fff; font-family: 'Inconsolata', Courier, monospace; }
     #controls { position: absolute; bottom: 2%; left: 2%; }
-    .playing #controls { opacity: 0.4; }
+    .playing #controls > button, #reset { opacity: 0.4; }
     .playing #configuration { display: none; }
     #start, #stop, #reset { background: none; border: 0; margin: 0; padding: 20px; }
     #start div { width: 0; height: 0; border-top: 44px solid transparent; border-left: 66px solid #efc300; border-bottom: 44px solid transparent; }
@@ -22,6 +22,8 @@
     #reset div { width: 0; height: 0; border-top: 44px solid transparent; border-right: 66px solid #efc300; border-bottom: 44px solid transparent; }
     #start:hover, #stop:hover, #reset:hover { cursor: pointer; }
     #logo { position: absolute; top: 2%; right: 2%; max-height: 50%; max-width: 50%; }
+    .playing #start, #stop { display: none; }
+    .playing #stop { display: inline-block; }
     </style>
   </head>
   <body>
