@@ -169,8 +169,8 @@ var TickTock = TickTock || {};
         API.setDuration = function(minutes, seconds) {
             var safeElapsed = elapsed;
 
-            minutes = parseInt(minutes);
-            seconds = parseInt(seconds);
+            minutes = +minutes;
+            seconds = +seconds;
 
             seconds = (minutes * 60) + seconds;
             length = seconds * 1000;
@@ -221,12 +221,7 @@ $(function() {
      */
     var padNumber = function(number) {
         var numberDisplay = number.toFixed(0);
-
-        if (numberDisplay.length < 2) {
-            numberDisplay = '0' + numberDisplay;
-        }
-
-        return numberDisplay;
+        return (numberDisplay.length >= 2) ? numberDisplay : '0' + numberDisplay;
     };
 
     /*
