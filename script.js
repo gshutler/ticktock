@@ -96,14 +96,14 @@ var TickTock = TickTock || {};
          * running and has time remaining.
          */
         updateTime = function() {
+            var now = null;
+
             if (running === false) {
                 return;
             }
 
-            var now = new Date();
+            now = new Date();
             elapsed = now - started ;
-
-            var message = { 'elapsed': elapsed, 'length': length };
 
             if (elapsed >= length) {
                 elapsed = length;
@@ -191,10 +191,20 @@ var TickTock = TickTock || {};
  * model.
  */
 $(function() {
+    var progress = $('#progress'),
+        body = $('body'),
+        timeText = $('#time'),
+        startButton = $('#start'),
+        stopButton = $('#stop'),
+        resetButton = $('#reset'),
+        setMinutes = $('#setMinutes'),
+        setSeconds = $('#setSeconds'),
+        setTimeButton = $('#setTime'),
+        setTime = null;
+
     /*
     Update the background progress bar whenever the elapsed time changes.
     */
-    var progress = $('#progress');
     TickTock.PubSub.subscribe('timeChanged', function(args) {
         progress.css('width', ((args.elapsed / args.length) * 100) + '%');
     });
@@ -202,7 +212,6 @@ $(function() {
     /*
     Toggle a class on the body signifying when the timer is running.
     */
-    var body = $('body');
     TickTock.PubSub.subscribe('timerStarted', function() {
         body.addClass('playing');
     });
@@ -227,10 +236,9 @@ $(function() {
     /*
     Updates the UI element displaying the currently elapsed time.
     */
-    var timeText = $('#time');
     TickTock.PubSub.subscribe('timeChanged', function(args) {
-        var seconds = args.elapsed / 1000;
-        var minutes = Math.floor(seconds / 60);
+        var seconds = args.elapsed / 1000,
+            minutes = Math.floor(seconds / 60);
 
         seconds = seconds - (minutes * 60);
 
@@ -240,35 +248,23 @@ $(function() {
     /*
     Make clicking the start button start the TickTock timer.
     */
-    var startButton = $('#start');
-    startButton.click(function() {
-        TickTock.Timer.start();
-    });
+    startButton.click(TickTock.Timer.start);
 
     /*
     Make clicking the stop button stop the TickTock timer.
     */
-    var stopButton = $('#stop');
-    stopButton.click(function() {
-        TickTock.Timer.stop();
-    });
+    stopButton.click(TickTock.Timer.stop);
 
     /*
     Make clicking the reset button reset the TickTock timer.
     */
-    var resetButton = $('#reset');
-    resetButton.click(function() {
-        TickTock.Timer.reset();
-    });
+    resetButton.click(TickTock.Timer.reset);
 
     /*
     Make changing the duration select lists update the TickTock duration.
     */
-    var setMinutes = $('#setMinutes');
-    var setSeconds = $('#setSeconds');
-    var setTimeButton = $('#setTime');
 
-    var setTime = function() {
+    setTime = function() {
         TickTock.Timer.setDuration(setMinutes.val(), setSeconds.val());
     };
 
