@@ -62,7 +62,7 @@ var TickTock = TickTock || {};
      * according to the timer, 'length' represents the length of time the
      * timer is running for.
      *
-     * Messages published:
+     * Channels published to:
      *
      *  * timeChanged - Published when the internal time is updated
      *  * timerStarted - Published when the timer is started
@@ -71,13 +71,22 @@ var TickTock = TickTock || {};
      *  * timerReset - Published when the timer is reset
      */
     TickTock.Timer = (function() {
-        var API = {};
-        var running = false;
-        var elapsed = 0;
-        var length = 5 * 1000;
-        var cycleTime = 20;
-        var updateTime = null;
-        var started = null;
+        var API = {},
+            running = false,
+            elapsed = 0,
+            length = 5 * 1000,
+            cycleTime = 20,
+            updateTime = null,
+            started = null,
+            publishMessage = null;
+
+        publishMessage = function(channel, message) {
+            message = message || {};
+            message['elapsed'] = message['elapsed'] || elapsed;
+            message['length'] = message['length'] || length;
+
+            TickTock.PubSub.publish(channel, message);
+        };
 
         /**
          * Updates the internal time of the timer, publishing messages
@@ -99,12 +108,12 @@ var TickTock = TickTock || {};
             if (elapsed >= length) {
                 elapsed = length;
                 running = false;
-                TickTock.PubSub.publish('timeChanged', message);
-                TickTock.PubSub.publish('timerComplete', message);
+                publishMessage('timeChanged');
+                publishMessage('timerComplete');
                 return;
             }
 
-            TickTock.PubSub.publish('timeChanged', message);
+            publishMessage('timeChanged');
             setTimeout(updateTime, cycleTime);
         };
 
@@ -123,8 +132,7 @@ var TickTock = TickTock || {};
             started = new Date() - elapsed;
             updateTime();
 
-            var message = { 'elapsed': elapsed, 'length': length };
-            TickTock.PubSub.publish('timerStarted', message);
+            publishMessage('timerStarted');
         };
 
         /**
@@ -132,8 +140,7 @@ var TickTock = TickTock || {};
          */
         API.stop = function() {
             running = false;
-            var message = { 'elapsed': elapsed, 'length': length };
-            TickTock.PubSub.publish('timerStopped', message);
+            publishMessage('timerStopped');
         };
 
         /**
@@ -146,10 +153,8 @@ var TickTock = TickTock || {};
             elapsed = 0;
             started = new Date();
 
-            var message = { 'elapsed': elapsed, 'length': length };
-
-            TickTock.PubSub.publish('timeChanged', message);
-            TickTock.PubSub.publish('timerReset', message);
+            publishMessage('timeChanged');
+            publishMessage('timerReset');
         };
 
         /**
@@ -174,8 +179,7 @@ var TickTock = TickTock || {};
                 safeElapsed = length;
             }
 
-            var message = { 'elapsed': safeElapsed, 'length': length };
-            TickTock.PubSub.publish('timerDurationSet', message);
+            publishMessage('timerDurationSet', { 'elapsed': safeElapsed });
         };
 
         return API;
