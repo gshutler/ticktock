@@ -83,6 +83,17 @@ var TickTock = TickTock || {};
             started = null,
             publishMessage = null;
 
+        /**
+         * Publishes a message to the named channel, setting default values on
+         * the specified message or creating a message with default values as
+         * appropriate.
+         *
+         * The default values are the current elapsed and timer length for
+         * their respective fields if no value is specified.
+         *
+         * channel - The name of the channel to publish the message to.
+         * message - The message to publish containing any non-default values.
+         */
         publishMessage = function (channel, message) {
             message = message || {};
             message.elapsed = message.elapsed || elapsed;
@@ -193,93 +204,91 @@ var TickTock = TickTock || {};
  * Function for controlling the interaction of the UI and the TickTock
  * model.
  */
-(function ($) {
+window.jQuery(document).ready(function ($) {
     "use strict";
 
-    $(function () {
-        var progress = $('#progress'),
-            body = $('body'),
-            timeText = $('#time'),
-            startButton = $('#start'),
-            stopButton = $('#stop'),
-            resetButton = $('#reset'),
-            setMinutes = $('#setMinutes'),
-            setSeconds = $('#setSeconds'),
-            padNumber = null,
-            setTime = null;
+    var progress = $('#progress'),
+        body = $('body'),
+        timeText = $('#time'),
+        startButton = $('#start'),
+        stopButton = $('#stop'),
+        resetButton = $('#reset'),
+        setMinutes = $('#setMinutes'),
+        setSeconds = $('#setSeconds'),
+        padNumber = null,
+        setTime = null;
 
-        /*
-        Update the background progress bar whenever the elapsed time changes.
-        */
-        TickTock.PubSub.subscribe('timeChanged', function (args) {
-            progress.css('width', ((args.elapsed / args.length) * 100) + '%');
-        });
-
-        /*
-        Toggle a class on the body signifying when the timer is running.
-        */
-        TickTock.PubSub.subscribe('timerStarted', function () {
-            body.addClass('playing');
-        });
-        TickTock.PubSub.subscribe('timerStopped', function () {
-            body.removeClass('playing');
-        });
-        TickTock.PubSub.subscribe('timerComplete', function () {
-            body.removeClass('playing');
-        });
-
-        /**
-         * Returns a string representation of a number padded to two characters
-         * with a zero if needed.
-         *
-         * number - The number to return a padded string representation of.
-         */
-        padNumber = function (number) {
-            var numberDisplay = number.toFixed(0);
-            return (numberDisplay.length >= 2) ? numberDisplay : '0' + numberDisplay;
-        };
-
-        /*
-        Updates the UI element displaying the currently elapsed time.
-        */
-        TickTock.PubSub.subscribe('timeChanged', function (args) {
-            var seconds = args.elapsed / 1000,
-                minutes = Math.floor(seconds / 60);
-
-            seconds = seconds - (minutes * 60);
-
-            timeText.text(padNumber(minutes) + ':' + padNumber(seconds));
-        });
-
-        /*
-        Make clicking the start button start the TickTock timer.
-        */
-        startButton.click(TickTock.Timer.start);
-
-        /*
-        Make clicking the stop button stop the TickTock timer.
-        */
-        stopButton.click(TickTock.Timer.stop);
-
-        /*
-        Make clicking the reset button reset the TickTock timer.
-        */
-        resetButton.click(TickTock.Timer.reset);
-
-        /*
-        Make changing the duration select lists update the TickTock duration.
-        */
-
-        setTime = function () {
-            TickTock.Timer.setDuration(setMinutes.val(), setSeconds.val());
-        };
-
-        setMinutes.change(setTime);
-        setSeconds.change(setTime);
-
-        /*
-        Initialize the TickTock timer so that it matches the selected values.
-        */
-        setTime();
+    /*
+    Update the background progress bar whenever the elapsed time changes.
+    */
+    TickTock.PubSub.subscribe('timeChanged', function (args) {
+        progress.css('width', ((args.elapsed / args.length) * 100) + '%');
     });
-}(window.jQuery));
+
+    /*
+    Toggle a class on the body signifying when the timer is running.
+    */
+    TickTock.PubSub.subscribe('timerStarted', function () {
+        body.addClass('playing');
+    });
+    TickTock.PubSub.subscribe('timerStopped', function () {
+        body.removeClass('playing');
+    });
+    TickTock.PubSub.subscribe('timerComplete', function () {
+        body.removeClass('playing');
+    });
+
+    /**
+     * Returns a string representation of a number padded to two characters
+     * with a zero if needed.
+     *
+     * number - The number to return a padded string representation of.
+     */
+    padNumber = function (number) {
+        var numberDisplay = number.toFixed(0);
+        return (numberDisplay.length >= 2) ? numberDisplay : '0' + numberDisplay;
+    };
+
+    /*
+    Updates the UI element displaying the currently elapsed time.
+    */
+    TickTock.PubSub.subscribe('timeChanged', function (args) {
+        var seconds = args.elapsed / 1000,
+            minutes = Math.floor(seconds / 60);
+
+        seconds = seconds - (minutes * 60);
+
+        timeText.text(padNumber(minutes) + ':' + padNumber(seconds));
+    });
+
+    /*
+    Make clicking the start button start the TickTock timer.
+    */
+    startButton.click(TickTock.Timer.start);
+
+    /*
+    Make clicking the stop button stop the TickTock timer.
+    */
+    stopButton.click(TickTock.Timer.stop);
+
+    /*
+    Make clicking the reset button reset the TickTock timer.
+    */
+    resetButton.click(TickTock.Timer.reset);
+
+    /*
+    Make changing the duration select lists update the TickTock duration.
+    */
+
+    setTime = function () {
+        TickTock.Timer.setDuration(setMinutes.val(), setSeconds.val());
+    };
+
+    setMinutes.change(setTime);
+    setSeconds.change(setTime);
+
+    /*
+    Initialize the TickTock timer so that it matches the selected values.
+    */
+    setTime();
+});
