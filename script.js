@@ -83,6 +83,17 @@ var TickTock = TickTock || {};
             started = null,
             publishMessage = null;
 
+        /**
+         * Publishes a message to the named channel, setting default values on
+         * the specified message or creating a message with default values as
+         * appropriate.
+         *
+         * The default values are the current elapsed and timer length for
+         * their respective fields if no value is specified.
+         *
+         * channel - The name of the channel to publish the message to.
+         * message - The message to publish containing any non-default values.
+         */
         publishMessage = function (channel, message) {
             message = message || {};
             message.elapsed = message.elapsed || elapsed;
